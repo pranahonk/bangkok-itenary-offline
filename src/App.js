@@ -1,25 +1,332 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
 
-function App() {
+const days = [
+  {
+    day: 1,
+    date: "Sun, 15 Feb",
+    title: "Arrival & Chatuchak Adventure",
+    icon: "\u2708\uFE0F",
+    color: "#E8B931",
+    items: [
+      { time: "06:30", title: "Depart Jakarta (CGK)", desc: "Indonesia AirAsia from Soekarno-Hatta. Boarding 05:45, departure 06:30.", type: "flight" },
+      { time: "10:00", title: "Arrive Don Mueang (DMK)", desc: "Immigration, collect bags. Buy a PHYSICAL SIM card at the airport \u2014 you need a Thai phone number to register LINE, LINE MAN, Bolt & MuvMi!", type: "arrival", tip: "Go to the DTAC booth (right after baggage claim, open 24hrs) or AIS (Exit 2) or TrueMove H. Get a Tourist SIM with data + calls (~299 THB for 8 days / 15GB). Bring your PASSPORT \u2014 required for registration. Staff will install & activate it for you in minutes!", details: [
+        { label: "DTAC", value: "2 booths: after baggage claim & opposite Exit 6. Open 00:00-23:59. Recommended!" },
+        { label: "AIS", value: "Arrivals Hall 1, Exit 2. Largest network, best rural coverage." },
+        { label: "TrueMove H", value: "3 stores in international terminal. Also available at 7-Eleven." },
+        { label: "Price", value: "299 THB (~Rp135k) for 8-day 15GB 5G + calls. Up to 999 THB for 30-day unlimited." },
+        { label: "You Need", value: "Passport (photo taken for registration, required by Thai law)" },
+        { label: "Why Physical", value: "Thai number needed for LINE, LINE MAN, Grab, Bolt, MuvMi registration!" },
+      ] },
+      { time: "10:30", title: "DMK \u2192 Chatuchak Weekend Market", desc: "A1 Bus (30 THB, ~20 min) from Terminal 1 Gate 6 to BTS Mo Chit. Or SRT Red Line (15 min) to Bang Sue + MRT 1 stop.", type: "transport", details: [
+        { label: "A1 Bus", value: "30 THB (~Rp14k) | Every 15 min | 20-30 min | Gate 6 T1" },
+        { label: "SRT Red Line", value: "15-33 THB | Every 15 min | 15 min + MRT transfer" },
+        { label: "Grab/Taxi", value: "200-350 THB (~Rp90-160k) | 15-45 min" },
+      ]},
+      { time: "11:00 \u2013 14:00", title: "Chatuchak Weekend Market", desc: "World's largest weekend market! 15,000+ stalls. It's SUNDAY so fully open. Clothes, handicrafts, souvenirs. Food: coconut ice cream, pad thai, mango sticky rice.", type: "activity", tip: "Store luggage at lockers near BTS Mo Chit (40-100 THB). Bring CASH \u2014 most stalls don't accept cards!" },
+      { time: "14:00 \u2013 15:00", title: "\u2192 Niran Grand Hotel", desc: "BTS Mo Chit \u2192 Siam \u2192 Sukhumvit Line \u2192 Udom Suk, then Grab. Or Grab directly (~250-350 THB).", type: "transport" },
+      { time: "15:00 \u2013 18:00", title: "Check-in & Rest", desc: "Niran Grand Hotel, 81/1 Soi Udomsuk 17, Sukhumvit 103, Bangna. Rooftop pool, relax.", type: "hotel" },
+      { time: "18:30 \u2013 21:00", title: "Dinner Nearby", desc: "Street food along Sukhumvit 103 or Grab to Mega Bangna.", type: "food" },
+    ],
+  },
+  {
+    day: 2, date: "Mon, 16 Feb", title: "Pratunam Shopping & Chinatown", icon: "\uD83D\uDED2", color: "#E85D75",
+    items: [
+      { time: "09:00 \u2013 12:00", title: "Pratunam Shopping District", desc: "Wholesale fashion hub! Platinum Fashion Mall, Indra Square, 'Everything 20 Baht' stores.", type: "activity", details: [
+        { label: "Tofu Pratunam", value: "Cheap eats \u2014 Kaiton Pratunam chicken rice ~50 THB" },
+        { label: "All \u0E3F20 stores", value: "Petchaburi Rd \u2014 socks, accessories, phone cases" },
+        { label: "Platinum Mall", value: "6 floors wholesale fashion, 9AM-8PM" },
+      ]},
+      { time: "12:30 \u2013 17:00", title: "Chinatown, Song Wat & Neng Noi Mua", desc: "MRT Wat Mangkon to Yaowarat Road. Sampeng Lane for accessories. Song Wat Street \u2014 creative district with caf\u00E9s, galleries, street art. Neng Noi Mua for sweets. Baan Thong Street for gold.", type: "activity", tip: "Song Wat Street is the hippest area in old Bangkok \u2014 colonial architecture, hidden caf\u00E9s, perfect for couple photos!" },
+      { time: "17:30 \u2013 19:00", title: "Thai Massage", desc: "Traditional Thai massage to recharge!", type: "activity", details: [
+        { label: "Thai Massage", value: "200-400 THB/hr (~Rp90-180k)" },
+        { label: "Foot Massage", value: "200-300 THB/hr" },
+        { label: "Oil Massage", value: "300-500 THB/hr" },
+      ]},
+      { time: "19:00 \u2013 22:00", title: "Jodd Fairs Night Market", desc: "Near MRT Thailand Cultural Centre (Exit 4). 600+ stalls! Volcano Ribs, grilled seafood, mango sticky rice, Toro Fries.", type: "food", details: [
+        { label: "Location", value: "Ratchadapisek Rd, MRT Cultural Centre Exit 4" },
+        { label: "Hours", value: "5PM \u2013 1AM daily" },
+        { label: "Payment", value: "Cash mostly!" },
+      ], tip: "Arrive 6-7PM to beat crowds. Bring small bills!" },
+    ],
+  },
+  {
+    day: 3, date: "Tue, 17 Feb", title: "Morning Markets & Temples", icon: "\uD83C\uDF05", color: "#4ECDC4",
+    items: [
+      { time: "06:30 \u2013 10:00", title: "Morning Market Tour", desc: "Bangkok's best morning markets \u2014 authentic, cheap, buzzing!", type: "activity", details: [
+        { label: "Or Tor Kor", value: "Near Chatuchak. Premium fruits & Thai food. 6AM-6PM" },
+        { label: "Wang Lang", value: "Thonburi side. Thai sweets & snacks. Ferry ride!" },
+        { label: "Nang Loeng", value: "100+ year old market. Traditional khanom Thai" },
+        { label: "Khlong Toei", value: "Largest wet market. Near hotel. Very local!" },
+      ]},
+      { time: "10:30 \u2013 13:00", title: "Tha Phra & Thonburi", desc: "Old Bangkok charm, local markets, temples, canal-side living. Long-tail boat along khlongs. Thonburi Market Place.", type: "activity" },
+      { time: "13:00 \u2013 14:00", title: "Lunch", desc: "Boat noodles, som tam, grilled fish with nam jim.", type: "food" },
+      { time: "15:00 \u2013 18:00", title: "Temples or Relax", desc: "Dib Museum CLOSED Tue/Wed \u2014 moved to Day 5! Options: Wat Arun (100 THB), Wat Pho (300 THB), or hotel pool.", type: "activity", tip: "Dib Museum closed Tue & Wed! We've scheduled it for Thursday (Day 5)." },
+      { time: "18:30 \u2013 21:00", title: "Dinner", desc: "Sukhumvit street food, or Asiatique The Riverfront (free entry, great night views).", type: "food" },
+    ],
+  },
+  {
+    day: 4, date: "Wed, 18 Feb", title: "Mahanakhon SkyWalk & Nightlife", icon: "\uD83C\uDFD9\uFE0F", color: "#7B68EE",
+    items: [
+      { time: "09:00 \u2013 12:00", title: "Morning \u2014 Work or Explore", desc: "Sleep in, or head to a freelancer caf\u00E9 (see Caf\u00E9s tab!). Perfect morning for a work session.", type: "activity" },
+      { time: "12:00 \u2013 14:00", title: "Lunch in Silom/Chong Nonsi", desc: "Head towards Silom for lunch. Thai Taste Hub at Mahanakhon building.", type: "food" },
+      { time: "15:30 \u2013 18:30", title: "Mahanakhon SkyWalk", desc: "Bangkok's highest point at 314m! 50-sec elevator to 74F. Glass tray on 78F. Visit at SUNSET!", type: "activity", details: [
+        { label: "Daytime", value: "~880 THB adult (~Rp396k) | 10AM-3:30PM" },
+        { label: "Sunset", value: "~880-1,000 THB | 4-6:30PM (BEST!)" },
+        { label: "Children", value: "~250 THB (3-15 yrs & seniors 60+)" },
+        { label: "Buy Online", value: "Klook / GetYourGuide for 10-20% off. Show QR." },
+        { label: "Getting There", value: "BTS Silom \u2192 Chong Nonsi, Exit 3, 2 min walk" },
+        { label: "Hours", value: "Daily 10AM-7PM (last entry 6:30PM)" },
+        { label: "Rules", value: "No bags (lockers avail). No food. Comfy shoes." },
+      ], tip: "Book SUNSET ticket (4-6:30PM) \u2014 watch Bangkok go from golden hour to glittering lights!" },
+      { time: "20:00 \u2013 Late", title: "Tic Tac Toe Bangkok", desc: "Hottest dating bar on 5F EmSphere. NYC-lounge vibe, magenta lighting, world-class sound.", type: "nightlife", details: [
+        { label: "Location", value: "5F EmSphere, 628 Sukhumvit Rd" },
+        { label: "Hours", value: "7PM till late (2-3AM)" },
+        { label: "Entry", value: "FREE!" },
+        { label: "BTS", value: "Phrom Phong" },
+        { label: "Dress", value: "Chic \u2014 no flip-flops/sportswear" },
+        { label: "Music", value: "Acoustic 8:30-9:30PM \u2192 DJ sets" },
+        { label: "Drinks", value: "Bottles \u0E3F2,490+ | Cocktails ~\u0E3F440" },
+        { label: "Special", value: "Thu Ladies' Night \u2014 free bottle for 4+ women" },
+      ], tip: "Reserve table via Line app. Menu has hidden visuals under blue light!" },
+    ],
+  },
+  {
+    day: 5, date: "Thu, 19 Feb", title: "Dib Museum & Colorful Street Art", icon: "\uD83C\uDFA8", color: "#FF6B6B",
+    items: [
+      { time: "10:00 \u2013 13:00", title: "Dib Museum Bangkok", desc: "Thailand's FIRST international contemporary art museum! Dec 2025. Repurposed 1980s warehouse. 81 works by 40 artists \u2014 Turrell, Hirst, Boonma.", type: "activity", details: [
+        { label: "Ticket", value: "700 THB (~Rp315k) foreign | 550 THB Thai" },
+        { label: "Buy Online", value: "dibbangkok.org \u2192 Book Tickets \u2192 date/time \u2192 credit card \u2192 QR email" },
+        { label: "On-site", value: "Cash or Thai local cards ONLY! Book online!" },
+        { label: "Hours", value: "Thu-Mon, 10AM-7PM | CLOSED Tue & Wed" },
+        { label: "Location", value: "111 Soi Sukhumvit 40, Phra Khanong" },
+        { label: "Transport", value: "BTS Phra Khanong/Thong Lo, then Grab" },
+        { label: "Must-See", value: "Turrell 'Straight Up' | Boonma 3F | Kwade courtyard" },
+      ], tip: "Book tickets at dibbangkok.org BEFORE visiting! On-site counter only takes cash/local Thai cards." },
+      { time: "13:30 \u2013 15:00", title: "Lunch & Caf\u00E9", desc: "Dib's caf\u00E9 & restaurant, or nearby Sukhumvit Soi 40.", type: "food" },
+      { time: "15:30 \u2013 18:00", title: "Talad Noi & Soi Charoen Krung \u2014 Street Art District", desc: "Bangkok's MOST colorful neighborhood! An open-air street art gallery in one of the city's oldest areas. Murals by famous artists like Alex Face (3-eyed bunny), Meubon (colorful bird Pukruk), and international muralists cover century-old shophouses. Mix of Thai-Chinese heritage, mechanic workshops, hidden caf\u00E9s, and world-class graffiti.", type: "activity", details: [
+        { label: "FREE!", value: "No entrance fee \u2014 it's a public neighborhood. Just walk & explore!" },
+        { label: "Start at", value: "Soi Charoen Krung 32 \u2014 highest concentration of murals (Bukruk Festival)" },
+        { label: "Must-see", value: "Alex Face bunny | Meubon's Pukruk bird | Lion Care by Bonus TMC | Steampunk gecko" },
+        { label: "Then walk", value: "Soi Charoen Krung 22 \u2192 Trok San Chao Rong Kueak alley \u2192 Song Wat Road murals" },
+        { label: "Caf\u00E9s", value: "Mother Roaster (above mechanic shop!), Songwat Coffee Roasters" },
+        { label: "Getting There", value: "From hotel: BTS Udom Suk \u2192 Saphan Taksin, then ferry to Si Phraya pier (400m walk). Or Grab ~200 THB" },
+        { label: "MRT option", value: "MRT Blue Line to Hua Lamphong, then walk 10 min or Grab 5 min" },
+        { label: "Best Time", value: "After 3PM when vendors clear out \u2014 better photos & cooler weather" },
+      ], tip: "This is Bangkok's answer to Wynwood Miami or Shoreditch London! FREE to explore, ultra-photogenic for couples. Walk from Talad Noi \u2192 Song Wat Road \u2192 Chinatown for dinner. All connected by foot!" },
+      { time: "18:00 \u2013 19:00", title: "Khlong Ong Ang Walking Street", desc: "Canal-side art walk near Chinatown! Fairy lights and colorful bunting over the canal, with stunning murals by Thailand's top street artists. Food stalls, live music (Luk Thung, indie), and a magical atmosphere after sunset.", type: "activity", details: [
+        { label: "FREE!", value: "No entrance fee. Open evening hours." },
+        { label: "Location", value: "Khlong Ong Ang canal, between Chinatown and Phahurat (Little India)" },
+        { label: "Must-see", value: "Alex Face meditating bunny mural | Art Alley (psychedelic black-light tunnel!)" },
+        { label: "Food", value: "Thai, Chinese, Nepalese, Korean street food stalls along the canal" },
+        { label: "Getting There", value: "10 min walk from Talad Noi / Song Wat Road. Or MRT Sam Yot station" },
+        { label: "Tip", value: "Best after sunset \u2014 fairy lights reflect on the canal water. Very romantic!" },
+      ], tip: "Visit the Malee Brew + Bloom caf\u00E9 nearby before walking the canal \u2014 stunning flower exhibitions inside and amazing espresso drinks with dry ice!" },
+      { time: "19:00 \u2013 21:00", title: "Dinner \u2014 Yaowarat Night", desc: "Chinatown at night! Just a short walk from Ong Ang. T&K Seafood, Nai Ek Roll Noodle, street-side pad thai and dim sum.", type: "food" },
+    ],
+  },
+  {
+    day: 6, date: "Fri, 20 Feb", title: "Freelance & Explore", icon: "\uD83D\uDCBB", color: "#10B981",
+    items: [
+      { time: "08:00 \u2013 13:00", title: "Work Session at Caf\u00E9", desc: "Head to a laptop-friendly caf\u00E9 for a productive freelancing session. See Caf\u00E9s tab!", type: "activity", details: [
+        { label: "Paper Plane", value: "40F Thong Lo. FREE cowork \u2014 buy coffee. Skyline views!" },
+        { label: "Sarnies", value: "Sukhumvit 39. 630 Mbps WiFi! Quiet 2F. Great matcha." },
+        { label: "The Commons", value: "Thong Lo Soi 17. Community space, fast WiFi." },
+        { label: "Open House", value: "6F Central Embassy. Bookstore + caf\u00E9. Premium." },
+      ], tip: "Order every ~2 hours \u2014 Bangkok caf\u00E9 etiquette. Bring a jacket, AC is freezing!" },
+      { time: "13:00 \u2013 14:00", title: "Lunch", desc: "Eat at your caf\u00E9 or explore nearby options.", type: "food" },
+      { time: "14:30 \u2013 18:00", title: "Last Sightseeing", desc: "Grand Palace (500 THB), Wat Pho (300 THB), Wat Arun (100 THB), or shopping at MBK / Siam.", type: "activity", details: [
+        { label: "Grand Palace", value: "500 THB \u2014 Thailand's most iconic. Cover shoulders & knees." },
+        { label: "Wat Pho", value: "300 THB \u2014 Giant Reclining Buddha" },
+        { label: "Wat Arun", value: "100 THB \u2014 Temple of Dawn, riverside" },
+        { label: "MBK Center", value: "Free entry \u2014 massive mall near BTS National Stadium" },
+      ]},
+      { time: "18:30 \u2013 21:00", title: "Farewell Dinner", desc: "Pick your favorite spot from the trip or try somewhere new!", type: "food" },
+    ],
+  },
+  {
+    day: 7, date: "Sat, 21 Feb", title: "Departure Day", icon: "\uD83D\uDEEB", color: "#45B7D1",
+    items: [
+      { time: "09:00 \u2013 12:00", title: "Last Morning", desc: "Pack, last-minute souvenirs, or enjoy a slow morning. Get that final Thai iced tea!", type: "activity" },
+      { time: "12:00 \u2013 13:00", title: "Check-out", desc: "Check out from Niran Grand Hotel. Store bags at reception if needed.", type: "hotel" },
+      { time: "13:00 \u2013 14:30", title: "Last Lunch", desc: "One final Thai meal \u2014 make it count!", type: "food" },
+      { time: "15:00 \u2013 16:30", title: "\u2192 Don Mueang Airport", desc: "Grab/taxi (~1-1.5 hrs Saturday traffic). Or BTS Mo Chit \u2192 A1 Bus. Arrive 2.5+ hrs early.", type: "transport", tip: "Leave EARLY! Saturday traffic can be brutal. Allow 1.5-2 hours." },
+      { time: "18:45", title: "Depart BKK \u2192 Jakarta", desc: "Indonesia AirAsia. DMK 18:45 \u2192 CGK 22:15. 3h30m. Selamat jalan, Bangkok!", type: "flight" },
+    ],
+  },
+];
+
+const cafes = [
+  { name: "Paper Plane Project", area: "Thong Lo (40th Floor!)", wifi: "Fast, stable", vibe: "Library Quiet", power: "Most seats", hours: "~8AM-6PM", cost: "Just buy coffee (~120 THB+) \u2014 no entry fee!", highlight: "FREE coworking on the 40th floor with jaw-dropping Bangkok skyline views. Recently renovated, stylish. No outside food.", bts: "BTS Thong Lo", stars: 5 },
+  { name: "Sarnies Sukhumvit", area: "Sukhumvit Soi 39", wifi: "630 Mbps!", vibe: "Minimal & Cozy", power: "Plenty upstairs", hours: "8AM-10PM", cost: "Coffee 100-150 THB, mains 200-400 THB", highlight: "Blazing fast WiFi, quiet 2nd floor workspace. Japanese-themed with great matcha & breakfast bowls. One of BKK's best.", bts: "BTS Phrom Phong", stars: 5 },
+  { name: "The Commons Thonglor", area: "Thonglor Soi 17", wifi: "Fast & stable", vibe: "Social / Community", power: "Indoor outlets", hours: "8AM-12AM", cost: "Coffee 100-160 THB, various vendors", highlight: "Community lifestyle space with food vendors, caf\u00E9s, boutiques. Productive before 5PM, social hub after. Great brunch!", bts: "BTS Thong Lo", stars: 4 },
+  { name: "Open House", area: "6F Central Embassy, Phloen Chit", wifi: "Good", vibe: "Premium / Bookstore", power: "At tables", hours: "10AM-9PM", cost: "Coffee 130-180 THB", highlight: "Open-concept bookstore + restaurants + caf\u00E9s. Lots of tables for working. Very Instagram-worthy premium space.", bts: "BTS Phloen Chit", stars: 4 },
+  { name: "Le Caf\u00E9 Ph\u00E9nix", area: "Ekkamai (near BTS)", wifi: "Reliable", vibe: "Stylish & Quiet", power: "Plenty", hours: "24/7!", cost: "Coffee 90-140 THB", highlight: "Hidden gem open 24 hours! Perfect for night owls or working with Jakarta/overseas timezone clients.", bts: "BTS Ekkamai", stars: 4 },
+  { name: "C Asean Samyan CO-OP", area: "Samyan Mitrtown Mall", wifi: "AIS/True SIM needed", vibe: "Library / Serious", power: "Abundant \u2014 desks, phone booths", hours: "24/7 \u2014 FREE!", cost: "FREE! (bring ID). 24/7 Starbucks in same building.", highlight: "FREE 24/7 coworking with desks, phone booths, multiple levels. Register with passport. Very popular.", bts: "MRT Sam Yan", stars: 4 },
+  { name: "Luka Caf\u00E9", area: "Silom / Pan Road", wifi: "High-speed", vibe: "Creative / Trendy", power: "Charging stations", hours: "8AM-6PM", cost: "Coffee 100-150 THB, mains 180-350 THB", highlight: "Trendy with wood, greenery, industrial flair. Great avo toast & specialty coffee. Dog-friendly!", bts: "BTS Chong Nonsi", stars: 4 },
+  { name: "Coffee Club (Staybridge)", area: "Thonglor", wifi: "Hotel WiFi", vibe: "Casual / Reliable", power: "Available", hours: "24/7!", cost: "Coffee 100-160 THB", highlight: "Open 24/7 inside Staybridge Suites. Comfortable, reliable. Avoid 7-10:30AM breakfast rush.", bts: "BTS Thong Lo", stars: 4 },
+];
+
+const practicalInfo = [
+  { title: "\uD83D\uDCB3 Money & ATMs", items: [
+    "ATMs charge 150-250 THB (~Rp67-112k) per foreign withdrawal",
+    "AEON ATMs = lowest at 150 THB (Big C, Lotus, malls)",
+    "Max: 20,000-30,000 THB/transaction",
+    "ALWAYS choose 'Decline Conversion' / 'Charge in THB' \u2014 saves 3-5%!",
+    "BETTER: Bring IDR/USD cash \u2192 exchange at SuperRich (Pratunam/Siam)",
+    "Markets & street food = CASH ONLY. Grab accepts cards.",
+  ]},
+  { title: "\uD83D\uDCF1 Thai SIM Card (Physical)", items: [
+    "Buy at DMK airport arrivals \u2014 DTAC, AIS, or TrueMove H booths",
+    "DTAC recommended: 2 booths, open 24hrs, good speed & coverage",
+    "Tourist SIM: 299 THB (8 days, 15GB 5G + calls) up to 999 THB (30 days, unlimited)",
+    "Passport required for registration (Thai law). Staff installs & activates for you.",
+    "Both of you need separate SIM cards!",
+    "Thai number needed to register: LINE, LINE MAN, Grab, Bolt, MuvMi",
+    "Top up later via provider app (DTAC app cheaper!) or any 7-Eleven",
+    "After SIM: download LINE, LINE MAN (food delivery), Grab, Bolt, MuvMi",
+  ]},
+  { title: "\uD83D\uDEF5 Scooter Rental", items: [
+    "Daily: 250-400 THB/day for Honda Click 125cc",
+    "Weekly: 1,400-2,000 THB. Deposit: 2,000-5,000 cash (NEVER passport!)",
+    "Shops: Fatboy's (Ekkamai/Silom), ZipBikes, Rent A Scooter BKK",
+    "Need IDP with motorcycle endorsement. Helmet required (500 THB fine).",
+    "\u26A0\uFE0F BTS/MRT + Grab honestly safer for tourists in BKK traffic!",
+  ]},
+  { title: "\uD83D\uDE87 Getting Around", items: [
+    "BTS Skytrain: 16-62 THB. MRT: 17-42 THB. Fast & clean.",
+    "Grab: Like Gojek \u2014 cars, bikes, food delivery. Cash or card.",
+    "Bolt: Ride-hailing alternative, often cheaper than Grab!",
+    "MuvMi: Electric tuk-tuk app! Fixed price, no bargaining. 6:30AM-10PM.",
+    "MuvMi zones: Rattanakosin (Grand Palace), Sukhumvit, Silom, Ari, Chula-Samyan + more",
+    "MuvMi how-to: Download app \u2192 register \u2192 pick-up/drop-off \u2192 top up wallet (credit card) \u2192 scan QR on tuk-tuk",
+    "MuvMi Tourist Pass: 499 THB/person \u2014 unlimited private rides all day!",
+    "LINE MAN: Thailand's top food delivery app (like GoFood). Order via LINE.",
+    "River boats: 15-40 THB. Great for Grand Palace area.",
+    "Get Rabbit Card at BTS: 200 THB (100 deposit + 100 credit).",
+  ]},
+  { title: "\uD83D\uDCB1 Currency", items: [
+    "1 THB \u2248 Rp 450 | 100 THB \u2248 Rp 45k | 1,000 THB \u2248 Rp 450k",
+    "Budget couple/day: 2-3k THB (~Rp900k-1.35jt)",
+    "Mid-range: 4-6k THB (~Rp1.8-2.7jt)",
+    "Comfortable: 6-10k THB (~Rp2.7-4.5jt)",
+  ]},
+];
+
+const TC = { flight: "#3B82F6", arrival: "#10B981", transport: "#F59E0B", activity: "#8B5CF6", hotel: "#EC4899", food: "#EF4444", nightlife: "#6366F1" };
+const TI = { flight: "\u2708\uFE0F", arrival: "\uD83D\uDEEC", transport: "\uD83D\uDE8C", activity: "\uD83C\uDFAF", hotel: "\uD83C\uDFE8", food: "\uD83C\uDF5C", nightlife: "\uD83C\uDFB5" };
+
+export default function App() {
+  const [tab, setTab] = useState(0);
+  const [exp, setExp] = useState({});
+  const [cafeOpen, setCafeOpen] = useState(null);
+  const [infoOpen, setInfoOpen] = useState(null);
+  const tog = (k) => setExp((p) => ({ ...p, [k]: !p[k] }));
+  const tabs = [...days.map((d) => ({ l: `D${d.day}`, s: d.date.split(", ")[0], i: d.icon, c: d.color })), { l: "Caf\u00E9s", s: "Work", i: "\u2615", c: "#10B981" }, { l: "Info", s: "Tips", i: "\uD83D\uDCCB", c: "#4ECDC4" }];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ fontFamily: "'Segoe UI',-apple-system,sans-serif", background: "linear-gradient(135deg,#0f0c29,#1a1a2e 50%,#16213e)", color: "#e8e8e8", minHeight: "100vh" }}>
+      <div style={{ background: "linear-gradient(135deg,#E8B931,#E85D75 50%,#7B68EE)", padding: "26px 20px 18px", textAlign: "center" }}>
+        <div style={{ fontSize: 36 }}>{"\uD83C\uDDF9\uD83C\uDDED"}</div>
+        <h1 style={{ fontSize: 24, fontWeight: 800, margin: "2px 0", color: "#fff", textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}>BANGKOK ITINERARY</h1>
+        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.9)", margin: 0 }}>Jakarta \u2192 Bangkok \u2022 15\u201321 Feb 2026 \u2022 7 Days</p>
+        <p style={{ fontSize: 10, color: "rgba(255,255,255,0.65)", margin: "2px 0 0" }}>Couple's adventure + freelance work guide {"\uD83D\uDC95\uD83D\uDCBB"}</p>
+      </div>
+
+      <div style={{ display: "flex", overflowX: "auto", background: "#1a1a2e", borderBottom: "1px solid rgba(255,255,255,0.07)", position: "sticky", top: 0, zIndex: 10 }}>
+        {tabs.map((t, i) => (
+          <button key={i} onClick={() => setTab(i)} style={{ flex: "1 0 auto", minWidth: 48, padding: "7px 4px", border: "none", borderBottom: tab === i ? `3px solid ${t.c}` : "3px solid transparent", background: tab === i ? "rgba(255,255,255,0.04)" : "transparent", color: tab === i ? t.c : "#555", cursor: "pointer", fontSize: 9, fontWeight: tab === i ? 700 : 500, textAlign: "center" }}>
+            <div style={{ fontSize: 15 }}>{t.i}</div>
+            <div>{t.l}</div>
+            <div style={{ fontSize: 7, opacity: 0.7 }}>{t.s}</div>
+          </button>
+        ))}
+      </div>
+
+      <div style={{ maxWidth: 660, margin: "0 auto", padding: "12px 10px" }}>
+        {tab < 7 && (() => { const d = days[tab]; return (<div>
+          <h2 style={{ fontSize: 18, fontWeight: 700, margin: "0 0 2px", color: d.color }}>{d.icon} Day {d.day}: {d.title}</h2>
+          <p style={{ fontSize: 10, color: "#666", margin: "0 0 12px" }}>{d.date}</p>
+          {d.items.map((it, i) => { const k = `${tab}-${i}`; const o = exp[k]; const hm = it.details || it.tip; return (
+            <div key={i} style={{ display: "flex", gap: 9, marginBottom: 9 }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: 28 }}>
+                <div style={{ width: 26, height: 26, borderRadius: "50%", background: TC[it.type] || "#666", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0 }}>{TI[it.type] || "\uD83D\uDCCC"}</div>
+                {i < d.items.length - 1 && <div style={{ width: 2, flex: 1, minHeight: 14, background: `${TC[it.type]}30` }} />}
+              </div>
+              <div onClick={() => hm && tog(k)} style={{ flex: 1, background: "rgba(255,255,255,0.03)", borderRadius: 9, padding: "9px 11px", border: `1px solid ${TC[it.type]}15`, cursor: hm ? "pointer" : "default" }}>
+                <div style={{ fontSize: 9.5, color: TC[it.type], fontWeight: 600 }}>{it.time}</div>
+                <div style={{ fontSize: 12.5, fontWeight: 600, color: "#eee", margin: "1px 0 2px" }}>{it.title}</div>
+                <div style={{ fontSize: 11.5, color: "#aaa", lineHeight: 1.45 }}>{it.desc}</div>
+                {hm && <div style={{ fontSize: 8.5, color: TC[it.type], marginTop: 4, fontWeight: 600, opacity: 0.6 }}>{o ? "\u25B2 Less" : "\u25BC Tap for details"}</div>}
+                {o && it.details && <div style={{ marginTop: 7, borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: 5 }}>
+                  {it.details.map((dd, j) => (<div key={j} style={{ display: "flex", gap: 5, marginBottom: 4, fontSize: 11, lineHeight: 1.3 }}>
+                    <span style={{ color: TC[it.type], fontWeight: 600, minWidth: 78, flexShrink: 0 }}>{dd.label}</span>
+                    <span style={{ color: "#bbb" }}>{dd.value}</span>
+                  </div>))}
+                </div>}
+                {o && it.tip && <div style={{ marginTop: 6, padding: "6px 8px", background: "rgba(232,185,49,0.06)", borderRadius: 5, fontSize: 11, color: "#E8B931", lineHeight: 1.35, borderLeft: "3px solid #E8B931" }}>{it.tip}</div>}
+              </div>
+            </div>
+          );})}
+        </div>);})()}
+
+        {tab === 7 && (<div>
+          <h2 style={{ fontSize: 18, fontWeight: 700, margin: "0 0 2px", color: "#10B981" }}>{"\u2615"} Freelancer-Friendly Caf\u00E9s</h2>
+          <p style={{ fontSize: 11, color: "#888", margin: "0 0 12px", lineHeight: 1.4 }}>Laptop-friendly spots with fast WiFi, power outlets & good coffee for getting work done.</p>
+          {cafes.map((c, i) => (<div key={i} onClick={() => setCafeOpen(cafeOpen === i ? null : i)} style={{ background: "rgba(255,255,255,0.03)", borderRadius: 9, marginBottom: 9, padding: "10px 12px", border: "1px solid rgba(16,185,129,0.1)", cursor: "pointer" }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#eee" }}>{c.name}</div>
+                <div style={{ fontSize: 10, color: "#10B981", fontWeight: 500 }}>{c.area}</div>
+              </div>
+              <div style={{ fontSize: 10, color: "#666" }}>{"\u2B50".repeat(c.stars)}</div>
+            </div>
+            <div style={{ fontSize: 11, color: "#999", marginTop: 3, lineHeight: 1.35 }}>{c.highlight}</div>
+            {cafeOpen === i && <div style={{ marginTop: 8, borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: 6 }}>
+              {[["WiFi", c.wifi], ["Vibe", c.vibe], ["Power", c.power], ["Hours", c.hours], ["Cost", c.cost], ["Transport", c.bts]].map(([l, v], j) => (
+                <div key={j} style={{ display: "flex", gap: 6, marginBottom: 3, fontSize: 11 }}>
+                  <span style={{ color: "#10B981", fontWeight: 600, minWidth: 65, flexShrink: 0 }}>{l}</span>
+                  <span style={{ color: "#bbb" }}>{v}</span>
+                </div>
+              ))}
+            </div>}
+            <div style={{ fontSize: 8, color: "#10B981", marginTop: 4, fontWeight: 600, opacity: 0.5 }}>{cafeOpen === i ? "\u25B2 Less" : "\u25BC Details"}</div>
+          </div>))}
+          <div style={{ marginTop: 14, padding: "10px 12px", background: "rgba(232,185,49,0.05)", borderRadius: 8, borderLeft: "3px solid #E8B931" }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: "#E8B931", marginBottom: 3 }}>Caf\u00E9 Etiquette</div>
+            <div style={{ fontSize: 11, color: "#aaa", lineHeight: 1.5 }}>Order every ~2 hrs for long sessions. Bring a jacket \u2014 BKK caf\u00E9 AC is FREEZING. WiFi password usually on receipt. Use headphones for calls!</div>
+          </div>
+        </div>)}
+
+        {tab === 8 && (<div>
+          <h2 style={{ fontSize: 18, fontWeight: 700, margin: "0 0 10px", color: "#4ECDC4" }}>{"\uD83D\uDCCB"} Essential Travel Info</h2>
+          {practicalInfo.map((s, i) => (<div key={i} style={{ background: "rgba(255,255,255,0.03)", borderRadius: 9, marginBottom: 9, overflow: "hidden", border: "1px solid rgba(255,255,255,0.04)" }}>
+            <button onClick={() => setInfoOpen(infoOpen === i ? null : i)} style={{ width: "100%", padding: "10px 12px", background: "none", border: "none", color: "#ddd", fontSize: 13, fontWeight: 600, textAlign: "left", cursor: "pointer", display: "flex", justifyContent: "space-between" }}>
+              {s.title}
+              <span style={{ fontSize: 10, color: "#555", transform: infoOpen === i ? "rotate(180deg)" : "none", transition: "0.2s" }}>{"\u25BC"}</span>
+            </button>
+            {infoOpen === i && <div style={{ padding: "0 12px 10px" }}>
+              {s.items.map((it, j) => (<div key={j} style={{ padding: "4px 0", borderTop: j ? "1px solid rgba(255,255,255,0.02)" : "none", fontSize: 11.5, lineHeight: 1.45, color: it.startsWith("\u26A0\uFE0F") ? "#F59E0B" : "#aaa" }}>{"\u2022"} {it}</div>))}
+            </div>}
+          </div>))}
+          <div style={{ background: "linear-gradient(135deg,rgba(232,185,49,0.07),rgba(78,205,196,0.07))", borderRadius: 9, padding: 12, marginTop: 12, border: "1px solid rgba(232,185,49,0.12)" }}>
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: "#E8B931", margin: "0 0 6px" }}>{"\uD83D\uDE8C"} DMK Arrival Checklist</h3>
+            <div style={{ fontSize: 11.5, lineHeight: 1.6, color: "#aaa" }}>
+              <p style={{ fontWeight: 600, color: "#EC4899", margin: "0 0 3px" }}>Step 1: Buy Thai SIM Card</p>
+              <p style={{ margin: "0 0 2px" }}>DTAC booth (after baggage claim) {"\u2192"} passport {"\u2192"} pick Tourist SIM (299 THB) {"\u2192"} staff installs</p>
+              <p style={{ fontWeight: 600, color: "#EC4899", margin: "8px 0 3px" }}>Step 2: Register Your Apps</p>
+              <p style={{ margin: "0 0 2px" }}>Download & register with Thai number: LINE {"\u2192"} LINE MAN {"\u2192"} Grab {"\u2192"} Bolt {"\u2192"} MuvMi</p>
+              <p style={{ fontWeight: 600, color: "#4ECDC4", margin: "8px 0 3px" }}>Step 3: A1 Bus to Chatuchak</p>
+              <p style={{ margin: "0 0 2px" }}>T1 Arrivals {"\u2192"} Gate 6 {"\u2192"} Blue A1 bus {"\u2192"} 30 THB cash {"\u2192"} BTS Mo Chit (~20 min)</p>
+              <p style={{ fontWeight: 600, color: "#4ECDC4", margin: "8px 0 3px" }}>Alt: SRT Red Line</p>
+              <p style={{ margin: 0 }}>T1 {"\u2192"} SRT station {"\u2192"} Bang Sue Grand (15 min) {"\u2192"} MRT Blue Line {"\u2192"} Chatuchak (1 stop)</p>
+            </div>
+          </div>
+        </div>)}
+      </div>
+
+      <div style={{ textAlign: "center", padding: "16px 12px", fontSize: 9, color: "#333", borderTop: "1px solid rgba(255,255,255,0.02)", marginTop: 16 }}>
+        {"\uD83C\uDDEE\uD83C\uDDE9"} Jakarta {"\u2192"} {"\uD83C\uDDF9\uD83C\uDDED"} Bangkok {"\u2022"} Feb 15-21, 2026 {"\u2022"} Indonesia AirAsia {"\u2022"} Prices approximate
+      </div>
     </div>
   );
 }
-
-export default App;
