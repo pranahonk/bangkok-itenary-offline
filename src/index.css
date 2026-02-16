@@ -4,13 +4,23 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 ::-webkit-scrollbar {
   height: 4px;
+  width: 0;
 }
 
 ::-webkit-scrollbar-track {
@@ -20,4 +30,14 @@ body {
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button:active {
+  opacity: 0.7;
+  transition: opacity 0.05s;
 }
