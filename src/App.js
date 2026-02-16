@@ -247,8 +247,17 @@ const TC = { flight: "#3B82F6", arrival: "#10B981", transport: "#F59E0B", activi
 const TI = { flight: "\u2708\uFE0F", arrival: "\uD83D\uDEEC", transport: "\uD83D\uDE8C", activity: "\uD83C\uDFAF", hotel: "\uD83C\uDFE8", food: "\uD83C\uDF5C", nightlife: "\uD83C\uDFB5" };
 const tagColors = { "24/7": "#10B981", "FREE": "#3B82F6", "NEARBY": "#EC4899", "FAST WIFI": "#F59E0B", "VIEWS": "#8B5CF6", "LATE NIGHT": "#6366F1" };
 
+function getInitialTab() {
+  const start = new Date(2026, 1, 15); // Feb 15, 2026
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  start.setHours(0, 0, 0, 0);
+  const diff = Math.floor((today - start) / 86400000);
+  return Math.max(0, Math.min(diff, 6));
+}
+
 export default function App() {
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState(getInitialTab);
   const [exp, setExp] = useState({});
   const [cafeOpen, setCafeOpen] = useState(null);
   const [infoOpen, setInfoOpen] = useState(null);
@@ -260,18 +269,22 @@ export default function App() {
       <div style={{ background: "linear-gradient(135deg,#E8B931,#E85D75 50%,#7B68EE)", padding: "32px 20px 22px", paddingTop: "max(32px, env(safe-area-inset-top, 32px))", textAlign: "center" }}>
         <div style={{ fontSize: 40 }}>{"\uD83C\uDDF9\uD83C\uDDED"}</div>
         <h1 style={{ fontSize: 26, fontWeight: 800, margin: "4px 0", color: "#fff", textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}>BANGKOK ITINERARY</h1>
-        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.9)", margin: 0 }}>Jakarta \u2192 Bangkok \u2022 15\u201321 Feb 2026 \u2022 7 Days</p>
+        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.9)", margin: 0 }}>Jakarta → Bangkok • 15–21 Feb 2026 • 7 Days</p>
         <p style={{ fontSize: 11, color: "rgba(255,255,255,0.65)", margin: "3px 0 0" }}>Couple's adventure + freelance work guide {"\uD83D\uDC95\uD83D\uDCBB"}</p>
       </div>
 
-      <div style={{ display: "flex", overflowX: "auto", background: "#1a1a2e", borderBottom: "1px solid rgba(255,255,255,0.07)", position: "sticky", top: 0, zIndex: 10, WebkitOverflowScrolling: "touch" }}>
-        {tabs.map((t, i) => (
-          <button key={i} onClick={() => { setTab(i); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ flex: "1 0 auto", minWidth: 52, padding: "10px 6px 8px", border: "none", borderBottom: tab === i ? `3px solid ${t.c}` : "3px solid transparent", background: tab === i ? "rgba(255,255,255,0.05)" : "transparent", color: tab === i ? t.c : "#555", cursor: "pointer", fontSize: 10, fontWeight: tab === i ? 700 : 500, textAlign: "center", touchAction: "manipulation" }}>
-            <div style={{ fontSize: 17 }}>{t.i}</div>
-            <div style={{ marginTop: 2 }}>{t.l}</div>
-            <div style={{ fontSize: 8, opacity: 0.7, marginTop: 1 }}>{t.s}</div>
-          </button>
-        ))}
+      <div style={{ display: "flex", background: "rgba(15,12,41,0.95)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.05)", position: "sticky", top: 0, zIndex: 10, padding: "8px 4px 6px", gap: 2 }}>
+        {tabs.map((t, i) => {
+          const active = tab === i;
+          return (
+            <button key={i} onClick={() => { setTab(i); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ flex: "1 1 0", minWidth: 0, padding: "8px 2px 6px", border: "none", background: active ? `${t.c}18` : "transparent", color: active ? t.c : "#556", cursor: "pointer", fontSize: 10, fontWeight: active ? 700 : 500, textAlign: "center", touchAction: "manipulation", transition: "all 0.2s ease", borderRadius: 10, position: "relative" }}>
+              <div style={{ fontSize: active ? 20 : 17, lineHeight: 1, transition: "font-size 0.2s ease", filter: active ? `drop-shadow(0 0 6px ${t.c}60)` : "none" }}>{t.i}</div>
+              <div style={{ marginTop: 3, fontSize: 9, whiteSpace: "nowrap", letterSpacing: active ? 0.5 : 0 }}>{t.l}</div>
+              {active && <div style={{ width: 4, height: 4, borderRadius: "50%", background: t.c, margin: "4px auto 0", boxShadow: `0 0 6px ${t.c}` }} />}
+              {!active && <div style={{ fontSize: 7, opacity: 0.5, marginTop: 2 }}>{t.s}</div>}
+            </button>
+          );
+        })}
       </div>
 
       <div style={{ maxWidth: 660, margin: "0 auto", padding: "14px 12px" }}>
@@ -376,7 +389,7 @@ export default function App() {
         </div>)}
       </div>
 
-      <div style={{ textAlign: "center", padding: "20px 14px", paddingBottom: "max(20px, env(safe-area-inset-bottom, 20px))", fontSize: 10, color: "#333", borderTop: "1px solid rgba(255,255,255,0.02)", marginTop: 16 }}>
+      <div style={{ textAlign: "center", padding: "20px 14px", paddingBottom: "max(20px, env(safe-area-inset-bottom, 20px))", fontSize: 10, color: "#666", borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: 16 }}>
         {"\uD83C\uDDEE\uD83C\uDDE9"} Jakarta {"\u2192"} {"\uD83C\uDDF9\uD83C\uDDED"} Bangkok {"\u2022"} Feb 15-21, 2026 {"\u2022"} Indonesia AirAsia {"\u2022"} Prices approximate
       </div>
     </div>
