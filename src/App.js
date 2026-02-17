@@ -58,18 +58,32 @@ const days = [
     ],
   },
   {
-    day: 3, date: "Tue, 17 Feb", title: "Morning Markets & Temples", icon: "\uD83C\uDF05", color: "#4ECDC4",
+    day: 3, date: "Tue, 17 Feb", title: "Meetings, ICONSIAM & Chinatown", icon: "\uD83D\uDCBC", color: "#4ECDC4",
     items: [
-      { time: "06:30 \u2013 10:00", title: "Morning Market Tour", desc: "Bangkok's best morning markets \u2014 authentic, cheap, buzzing!", type: "activity", details: [
+      { time: "07:00 – 09:30", title: "Morning Market Tour", desc: "Bangkok's best morning markets — authentic, cheap, buzzing! Head out early before your first meeting.", type: "activity", details: [
         { label: "Or Tor Kor", value: "Near Chatuchak. Premium fruits & Thai food. 6AM-6PM" },
         { label: "Wang Lang", value: "Thonburi side. Thai sweets & snacks. Ferry ride!" },
         { label: "Nang Loeng", value: "100+ year old market. Traditional khanom Thai" },
         { label: "Khlong Toei", value: "Largest wet market. Very local!" },
       ]},
-      { time: "10:30 \u2013 13:00", title: "Tha Phra & Thonburi", desc: "Old Bangkok charm, local markets, temples, canal-side living. Long-tail boat along khlongs. Thonburi Market Place.", type: "activity" },
-      { time: "13:00 \u2013 14:00", title: "Lunch", desc: "Boat noodles, som tam, grilled fish with nam jim.", type: "food" },
-      { time: "15:00 \u2013 18:00", title: "Temples or Relax", desc: "Dib Museum CLOSED Tue/Wed \u2014 moved to Day 5! Options: Wat Arun (100 THB), Wat Pho (300 THB), or chill at hotel.", type: "activity", tip: "Dib Museum closed Tue & Wed! We've scheduled it for Thursday (Day 5)." },
-      { time: "18:30 \u2013 21:00", title: "Dinner", desc: "Sathorn street food, or Asiatique The Riverfront (free entry, great night views \u2014 easy via BTS Saphan Taksin ferry!).", type: "food" },
+      { time: "10:05 – 10:35", title: "Interview — Prana Wijaya", desc: "30-minute meeting. Make sure you're at a quiet spot with good WiFi — hotel or nearby café.", type: "activity", tip: "Find a quiet corner at hotel or Luka Café (5 min walk). Test your mic & WiFi beforehand!" },
+      { time: "10:35 – 14:30", title: "Lunch & Free Time", desc: "Explore Sathorn/Silom area, grab lunch, or work from a café before your next meeting.", type: "food" },
+      { time: "14:45 – 15:30", title: "Meeting — Amarin Sam", desc: "Google Meet call with Amarin Sam.", type: "activity", details: [
+        { label: "Time", value: "2:45 PM – 3:30 PM" },
+        { label: "Link", value: "meet.google.com/qny-xqgy-kor" },
+        { label: "Platform", value: "Google Meet" },
+      ], tip: "Join a few minutes early. Same quiet spot as your morning meeting!" },
+      { time: "16:00 – 18:30", title: "ICONSIAM", desc: "Thailand's most iconic riverside mall! Luxury brands, SookSiam indoor floating market (ground floor), amazing river views. Easy to reach from Sathorn via BTS Saphan Taksin + free shuttle boat.", type: "activity", details: [
+        { label: "Getting There", value: "BTS Saphan Taksin (2 stops) → free ICONSIAM shuttle boat (every 15 min)" },
+        { label: "SookSiam", value: "GF — indoor floating market with street food from 77 provinces! Must-visit." },
+        { label: "Hours", value: "10AM – 10PM daily" },
+        { label: "Highlights", value: "River view terrace, Apple Store, Takashimaya, art exhibitions" },
+      ], tip: "Don't miss SookSiam on the ground floor — it's like a floating market INSIDE the mall! Amazing Thai food from every region." },
+      { time: "18:30 – 21:00", title: "Chinatown Night — Yaowarat", desc: "Take the Gold Line or Grab from ICONSIAM to Chinatown. Yaowarat Road comes alive at night! Street-side seafood, dim sum, Thai-Chinese desserts under the neon lights.", type: "food", details: [
+        { label: "Getting There", value: "ICONSIAM → Grab (~80 THB, 10 min) or ferry to Saphan Taksin → MRT Wat Mangkon" },
+        { label: "Must Try", value: "T&K Seafood, Nai Ek Roll Noodle, pad thai, mango sticky rice" },
+        { label: "Vibe", value: "Neon-lit streets, bustling, very photogenic at night!" },
+      ], tip: "Yaowarat is best after 6PM when all the street food stalls open up. Walk from MRT Wat Mangkon towards the neon signs!" },
     ],
   },
   {
